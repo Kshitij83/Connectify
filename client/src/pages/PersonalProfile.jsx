@@ -12,7 +12,6 @@ function PersonalProfile() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState("");
-  const [postCreated, setPostCreated] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);

@@ -7,8 +7,6 @@ function PostCard({ post }) {
   const [liked, setLiked] = useState(false); // Add state to track if the post is liked
   const [showComments, setShowComments] = useState(false);
   const [Pfp, setPfp] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getPfp = async () => {
@@ -26,9 +24,6 @@ function PostCard({ post }) {
         setPfp(response.data);
       } catch (error) {
         console.error("Error getting pfp:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 

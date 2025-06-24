@@ -6,6 +6,7 @@ import mainRouter from "./routes/index.js";
 import { Server } from "socket.io";
 import http from "http";
 import { messageModel } from "./models/messageModel.js";
+import { uploadAudioToS3 } from './utils/s3Upload.js';
 
 import connectDB from "./config/db.js";
 
@@ -39,11 +40,22 @@ io.on("connection", (socket) => {
     socket.join(room);
   });
 
-  socket.on("sendMessage", async ({ sender, receiver, message }) => {
+  socket.on("sendMessage", async ({ sender, receiver, message, messageType, fileName }) => {
+    let messageContent = message;
+
+    // Upload audio to S3 and use the S3 URL
+    if (messageType === "audio" && message.startsWith("data:audio")) {
+      messageContent = await uploadAudioToS3(message, fileName || "audio.webm");
+    }
+
+    // (Optional) For images, you can also upload to S3 here if you want
+
     const newMessage = await messageModel.create({
       sender,
       receiver,
-      message,
+      message: messageContent,
+      messageType: messageType || "text",
+      fileName: fileName || undefined,
       timestamp: Date.now(),
     });
 
@@ -51,6 +63,18 @@ io.on("connection", (socket) => {
     io.to(room).emit("message", newMessage);
   });
 
+  socket.on("callUser", (data) => {
+    io.to(data.to).emit("callUser", {
+      signal: data.signalData,
+      from: data.from,
+      name: data.name,
+      callType: data.callType, // 'audio' or 'video'
+    });
+  });
+
+  socket.on("answerCall", (data) => {
+    io.to(data.to).emit("callAccepted", data.signal);
+  });
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });

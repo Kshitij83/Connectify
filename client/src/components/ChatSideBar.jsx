@@ -52,7 +52,7 @@ function ChatSideBar({ setActive }) {
 
   return (
     <>
-      <div className="flex flex-col overflow-y-auto h-full border-r-2 border-gray-500 hidden  md:flex w-[35vw]">
+      <div className="flex-col overflow-y-auto h-full border-r-2 border-gray-500 hidden md:flex w-[35vw]">
         <div className="p-4 px-10 text-[30.6px] font-bold flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"

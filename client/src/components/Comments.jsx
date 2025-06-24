@@ -5,13 +5,7 @@ function Comments({ showComments, setShowComments, post }) {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
 
-  useEffect(() => {
-    if (showComments) {
-      fetchComments();
-    }
-  }, [showComments, comments]);
-
-  const fetchComments = async () => {
+  const fetchComments = React.useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
@@ -29,7 +23,13 @@ function Comments({ showComments, setShowComments, post }) {
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
-  };
+  }, [post._id]);
+
+  useEffect(() => {
+    if (showComments) {
+      fetchComments();
+    }
+  }, [showComments, fetchComments]);
 
   const handleAddComment = async () => {
     try {
